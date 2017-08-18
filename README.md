@@ -7,12 +7,12 @@ Library for short hand sorting of Salesforce SObjects by any field.  Uses a Quic
 Sort on Field:
 
     Account[] accs = [SELECT My_Custom_Field__c FROM Account LIMIT 2000];
-    SobSort.ascending(accs, Account.My_Custom_Field__c);
+    SortSob.ascending(accs, Account.My_Custom_Field__c);
 
 Sort on parent field:
 
     List<Contact> entries = [SELECT Name, Account.Name FROM Contact limit 2000];
-    SobSort.ascending(entries, SObjectField[]{ Contact.Account Account.Name });
+    SortSob.ascending(entries, SObjectField[]{ Contact.Account Account.Name });
 
 When sorting on parent fields, the last item in the SObjectField array is always the field to sort on.  All previous items must be relationship fields!
 
