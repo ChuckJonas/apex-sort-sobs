@@ -8,7 +8,7 @@
 
     Documentation:  Please see https://github.com/ChuckJonas/apex-sort-sobs for useage information & updates
 */
-public class SortSob{
+public class SortSobs{
 
     /**
       * @description        Sort SOBS ascending using a relationship field
