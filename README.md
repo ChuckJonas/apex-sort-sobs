@@ -2,9 +2,16 @@
 Library for short hand sorting of Salesforce SObjects by any field
 
 # usage
-    
+
+Sort on Field:
+
     Account[] accs = [SELECT My_Custom_Field__c FROM Account LIMIT 2000];
     SobSort.ascending(accs, Account.My_Custom_Field__c);
+    
+Sort on referenced object field:
+
+    List<Contact> entries = [SELECT Name, Account.Name FROM Contact limit 2000];
+    SobSort.ascending(entries, 'Account', Account.Name);
 
 # benchmarking
 
@@ -13,6 +20,9 @@ Library for short hand sorting of Salesforce SObjects by any field
 - Hardcoded Quicksort: 0.435s
 - Dynamic Field Quicksort: 0.692s
 - Dynamic Quicksort w/ reduced casting: .592s (implemented solution)
+
+
+Benchmark code for custom comparable wrapper
 
       public class ComparatorTest implements Comparable {
         public Account te;
