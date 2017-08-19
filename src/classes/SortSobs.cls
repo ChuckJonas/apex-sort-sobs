@@ -11,26 +11,60 @@
 public class SortSobs{
 
     /**
-      * @description        Sort SOBS ascending using a relationship field
+      * @description        Sort SOBS ascending using a relationship
       * @param sobs         SObjects to sort
       * @param sortFields   List of SObjectField to capture sorting field.
                                 The last item will be the value sorted on.
                                 All preceeding items must be relationship fields
       */
-    public static void ascending(List<SObject> sobs, SObjectField[] sortFields){
-        BaseSOBQuickSort quickSort;
+    public static void ascending(SObject[] sobs, SObjectField[] sortFields){
+        sort(sobs, sortFields, false);
+    }
 
-        //build Object list
+
+    /**
+      * @description        Sort SOBS descending using a relationship
+      * @param sobs         SObjects to sort
+      * @param sortFields   List of SObjectField to capture sorting field.
+                                The last item will be the value sorted on.
+                                All preceeding items must be relationship fields
+    */
+    public static void descending(SObject[] sobs, SObjectField[] sortFields){
+        sort(sobs, sortFields, true);
+    }
+
+    /**
+      * @description        Sort SOBS ascending using a field
+      * @param sobs         SObjects to sort
+      * @param sortField    Field to sort on
+    */
+    public static void ascending(SObject[] sobs, SObjectField sortField){
+        sort(sobs, new SObjectField[]{ sortField }, false);
+    }
+
+    /**
+      * @description        Sort SOBS descending using a field
+      * @param sobs         SObjects to sort
+      * @param sortField    Field to sort on
+    */
+    public static void descending(SObject[] sobs, SObjectField sortField){
+        sort(sobs, new SObjectField[]{ sortField }, true);
+    }
+
+    /** HELPERS **/
+
+    //extracts values, determines type, runs sort
+    private static void sort(SObject[] sobs, SObjectField[] sortFields, Boolean reverse){
+        SObjectField sortField = sortFields.remove(sortFields.size()-1);
+
         Object[] values = new Object[]{};
-
         for(SObject sob : sobs){
-            values.add(getValueFromRelationship(sob, sortFields));
+            values.add(getValueFromRelationship(sob, sortFields, sortField));
         }
 
-        System.debug(values);
-
         //infer sort type
-        Schema.SoapType sType = sortFields[sortFields.size()-1].getDescribe().getSoapType();
+        BaseSOBQuickSort quickSort;
+        Schema.SoapType sType = sortField.getDescribe().getSoapType();
         if(sType == Schema.SoapType.Integer || sType == Schema.SoapType.Double || sType == Schema.SoapType.Time){
             quickSort = new DecimalSOBQuicksort();
         }else if(sType == Schema.SoapType.String || sType == Schema.SoapType.Id || sType == Schema.SoapType.Base64binary){
@@ -40,29 +74,19 @@ public class SortSobs{
         }else if(sType == Schema.SoapType.Boolean){
             quickSort = new BooleanSOBQuicksort();
         }
-        quickSort.sort(values, sobs);
+        quickSort.sort(values, sobs, reverse);
 
     }
 
-    /**
-      * @description        Sort SOBS ascending using a field
-      * @param sobs         SObjects to sort
-      * @param sortField    Field to sort on
-      */
-    public static void ascending(List<SObject> sobs, SObjectField sortField){
-        ascending(sobs, new SObjectField[]{ sortField });
-    }
-
-    /** HELPERS **/
-    private static Object getValueFromRelationship(SObject sob, SObjectField[] relationships){
-        if(relationships.size() == 1){
-            return sob.get(relationships[0]);
+    //extracts value from sob
+    private static Object getValueFromRelationship(SObject sob, SObjectField[] relationships, SObjectField sortField){
+        if(relationships.size() == 0){
+            return sob.get(sortField);
         }
 
-        SObjectField sortField = relationships.remove(relationships.size()-1);
         SObject parentSob = sob;
-        for(SObjectField s : relationships){
-            parentSob = parentSob.getSObject(s);
+        for(Integer i = 0; i < relationships.size(); i++){
+            parentSob = parentSob.getSObject(relationships[i]);
             if(parentSob == null){
                 return null;
             }
@@ -72,9 +96,9 @@ public class SortSobs{
 
     /** QUICKSORT TYPE IMPLEMENTATIONS **/
 
-    public class DecimalSOBQuicksort extends BaseSOBQuickSort{
+    private class DecimalSOBQuicksort extends BaseSOBQuickSort{
 
-        public override Integer compareToPivot(Object value, Object pivot){
+        private override Integer compareToPivot(Object value, Object pivot){
             Decimal val = (Decimal) value;
             Decimal piv = (Decimal) pivot;
             if(val == piv){ return 0; }
@@ -83,9 +107,9 @@ public class SortSobs{
         }
     }
 
-    public class StringSOBQuicksort extends BaseSOBQuickSort{
+    private class StringSOBQuicksort extends BaseSOBQuickSort{
 
-        public override Integer compareToPivot(Object value, Object pivot){
+        private override Integer compareToPivot(Object value, Object pivot){
 
 
             String val = (String) value;
@@ -96,9 +120,9 @@ public class SortSobs{
         }
     }
 
-    public class DatetimeSOBQuicksort extends BaseSOBQuickSort{
+    private class DatetimeSOBQuicksort extends BaseSOBQuickSort{
 
-        public override Integer compareToPivot(Object value, Object pivot){
+        private override Integer compareToPivot(Object value, Object pivot){
             DateTime val = (DateTime) value;
             DateTime piv = (DateTime) pivot;
             if(val == piv){ return 0; }
@@ -107,9 +131,9 @@ public class SortSobs{
         }
     }
 
-    public class BooleanSOBQuicksort extends BaseSOBQuickSort{
+    private class BooleanSOBQuicksort extends BaseSOBQuickSort{
 
-        public override Integer compareToPivot(Object value, Object pivot){
+        private override Integer compareToPivot(Object value, Object pivot){
             Boolean val = (Boolean) value;
             Boolean piv = (Boolean) pivot;
             if(val && piv || !val && !piv){ return 0; }
@@ -119,12 +143,15 @@ public class SortSobs{
     }
 
     /** QUICKSORT BASE CLASS **/
-    public abstract class BaseSOBQuickSort{
+    private abstract class BaseSOBQuickSort{
         private SObject[] sobs;
         private Integer length;
         private Object[] values;
+        private Boolean reverse;
 
-        public void sort(Object[] inputValues, SObject[] sobs) {
+        public void sort(Object[] inputValues, SObject[] sobs, Boolean reverse) {
+            this.reverse = reverse;
+
             // check for empty or null array
             if (inputValues == null || inputValues.size()==0){
                 return;
@@ -138,23 +165,25 @@ public class SortSobs{
         }
 
         // returns 1 if greater, -1 if less than, 0 if equals
-        public abstract Integer compareToPivot(Object value, Object pivot);
+        private abstract Integer compareToPivot(Object value, Object pivot);
 
         private void quicksort(Integer low, Integer high) {
             Integer i = low, j = high;
 
             Object pivot = values[low + (high-low)/2];
 
+            Integer negator = reverse == true ? -1 : 1;
+
             // into two array
             while (i <= j) {
 
                 // if current item from left array < pivot
-                while (compareToPivot(values[i], pivot) == -1){
+                while (compareToPivot(values[i], pivot) * negator == -1){
                     //get the next item in left array
                     i++;
                 }
                 // if current item from right array > pivot
-                while (compareToPivot(values[j], pivot) == 1) {
+                while (compareToPivot(values[j], pivot) * negator == 1) {
                     //get the next item in right array
                     j--;
                 }

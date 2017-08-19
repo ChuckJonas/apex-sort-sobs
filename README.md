@@ -9,6 +9,11 @@ Sort on Field:
     Account[] accs = [SELECT My_Custom_Field__c FROM Account LIMIT 2000];
     SortSobs.ascending(accs, Account.My_Custom_Field__c);
 
+Sort in reverse order (desc)
+
+    Account[] accs = [SELECT My_Custom_Field__c FROM Account LIMIT 2000];
+    SortSobs.descending(accs, Account.My_Custom_Field__c);
+
 Sort on parent field:
 
     List<Contact> entries = [SELECT Name, Account.Name FROM Contact limit 2000];
@@ -22,9 +27,8 @@ This implemenation is a little slower than a `Comparable`, mostly because of ove
 
 ## todo
 
-- Implement descending methods
-- Add unit tests
-- Optimization around casting
+- complete unit tests
+- Optimization around casting/general overhead
 
 # benchmarking
 
