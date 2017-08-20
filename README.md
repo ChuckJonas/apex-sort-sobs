@@ -16,8 +16,8 @@ Sort in reverse order (desc)
 
 Sort on parent field:
 
-    List<Contact> entries = [SELECT Name, Account.Name FROM Contact limit 2000];
-    SortSobs.ascending(entries, SObjectField[]{ Contact.Account Account.Name });
+    List<Contact> entries = [SELECT Name, Account.Name FROM Contact LIMIT 2000];
+    SortSobs.ascending(entries, SObjectField[]{ Contact.Account, Account.Name });
 
 When sorting on parent fields, the last item in the SObjectField array is always the field to sort on.  All previous items must be relationship fields!
 
