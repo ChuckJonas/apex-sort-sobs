@@ -27,11 +27,10 @@ This implemenation is a little slower than a `Comparable`, mostly because of ove
 
 ## todo
 
-- 100% test coverage
 - Optimization around casting/general overhead
 - Provide more complete benchmarking
 
-# benchmarking
+## benchmarking
 
 n=2000
 
