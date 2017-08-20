@@ -6,18 +6,24 @@ Utility class that provides a short-hand method for sorting of Salesforce SObjec
 
 Sort on Field:
 
-    Account[] accs = [SELECT My_Custom_Field__c FROM Account LIMIT 2000];
-    SortSobs.ascending(accs, Account.My_Custom_Field__c);
+``` java
+Account[] accs = [SELECT My_Custom_Field__c FROM Account LIMIT 2000];
+SortSobs.ascending(accs, Account.My_Custom_Field__c);
+```
 
 Sort in reverse order (desc)
 
-    Account[] accs = [SELECT My_Custom_Field__c FROM Account LIMIT 2000];
-    SortSobs.descending(accs, Account.My_Custom_Field__c);
+``` java
+Account[] accs = [SELECT My_Custom_Field__c FROM Account LIMIT 2000];
+SortSobs.descending(accs, Account.My_Custom_Field__c);
+```
 
 Sort on parent field:
 
-    List<Contact> entries = [SELECT Name, Account.Name FROM Contact LIMIT 2000];
-    SortSobs.ascending(entries, SObjectField[]{ Contact.Account, Account.Name });
+``` java
+List<Contact> entries = [SELECT Name, Account.Name FROM Contact LIMIT 2000];
+SortSobs.ascending(entries, SObjectField[]{ Contact.Account, Account.Name });
+```
 
 When sorting on parent fields, the last item in the SObjectField array is always the field to sort on.  All previous items must be relationship fields!
 
