@@ -1,6 +1,6 @@
 # apex-sort-sobs
 
-Library for short hand sorting of Salesforce SObjects by any field.  Uses a Quicksort implementation with Dynamic Type Inference.
+Utility class that provides a short-hand method for sorting of Salesforce SObjects by any field.  Uses a Quicksort implementation with Dynamic Type Inference.
 
 ## usage
 
@@ -27,8 +27,9 @@ This implemenation is a little slower than a `Comparable`, mostly because of ove
 
 ## todo
 
-- complete unit tests
+- 100% test coverage
 - Optimization around casting/general overhead
+- Provide more complete benchmarking
 
 # benchmarking
 
