@@ -63,3 +63,6 @@ Benchmark code for custom comparable wrapper for reference:
             return -1;
         }
        }
+
+## License
+MIT
