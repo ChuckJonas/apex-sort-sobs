@@ -137,45 +137,45 @@ private class SortSobsTests {
 	}
 
     @isTest static void test_datetime_field() {
-		Case[] cases = new Case[]{};
+        Task[] tasks = new Task[]{};
         Integer j = 200;
         for(Integer i = 0; i < j; i++){
-            cases.add(new Case(
-                ClosedDate = DateTime.now().addDays((Integer)Math.random() * 1000)
+            tasks.add(new Task(
+                    ReminderDateTime = DateTime.now().addDays((Integer)Math.random() * 1000)
             ));
         }
 
         Test.startTest();
-        SortSobs.ascending(cases, Case.ClosedDate);
+        SortSobs.ascending(tasks, Task.ReminderDateTime);
         Test.stopTest();
 
-        Case previousCase = cases.remove(0);
-        for(Case c : cases){
-            System.assert(previousCase.ClosedDate <= c.ClosedDate);
-            previousCase = c;
+        Task previousTask = tasks.remove(0);
+        for(Task t : tasks){
+            System.assert(previousTask.ReminderDateTime <= t.ReminderDateTime);
+            previousTask = t;
         }
 
-	}
+    }
 
     @isTest static void test_datetime_field_desc() {
-		Case[] cases = new Case[]{};
+        Task[] tasks = new Task[]{};
         Integer j = 200;
         for(Integer i = 0; i < j; i++){
-            cases.add(new Case(
-                ClosedDate = DateTime.now().addDays((Integer)Math.random() * 1000)
+            tasks.add(new Task(
+                    ReminderDateTime = DateTime.now().addDays((Integer)Math.random() * 1000)
             ));
         }
 
         Test.startTest();
-        SortSobs.descending(cases, Case.ClosedDate);
+        SortSobs.descending(tasks, Task.ReminderDateTime);
         Test.stopTest();
 
-        Case previousCase = cases.remove(0);
-        for(Case c : cases){
-            System.assert(previousCase.ClosedDate >= c.ClosedDate);
-            previousCase = c;
+        Task previousTask = tasks.remove(0);
+        for(Task t : tasks){
+            System.assert(previousTask.ReminderDateTime >= t.ReminderDateTime);
+            previousTask = t;
         }
-	}
+    }
 
     @isTest static void test_boolean_field() {
 		Case[] cases = new Case[]{};
