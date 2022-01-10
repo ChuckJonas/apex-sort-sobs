@@ -1,13 +1,12 @@
 /**
     Author: Charlie Jonas
         (github: @chuckjonas, charlie@callawaycloudconsulting.com)
-
     Description:
         Allows for dynamic sorting of SObject Lists without the need to impement Comparables.
         - Uses quicksort
-
     Documentation:  Please see https://github.com/ChuckJonas/apex-sort-sobs for useage information & updates
 */
+@SuppressWarnings('PMD')
 public class SortSobs{
 
     /**
@@ -65,9 +64,12 @@ public class SortSobs{
         //infer sort type
         BaseSOBQuickSort quickSort;
         Schema.SoapType sType = sortField.getDescribe().getSoapType();
-        if(sType == Schema.SoapType.Integer || sType == Schema.SoapType.Double || sType == Schema.SoapType.Time){
+        if(sType == Schema.SoapType.Integer || sType == Schema.SoapType.Double){
             quickSort = new DecimalSOBQuicksort();
-        }else if(sType == Schema.SoapType.String || sType == Schema.SoapType.Id || sType == Schema.SoapType.Base64binary){
+        }else if(sType == Schema.SoapType.Time) {
+            quickSort = new TimeSOBQuicksort();
+        }
+        else if(sType == Schema.SoapType.String || sType == Schema.SoapType.Id || sType == Schema.SoapType.Base64binary){
             quickSort = new StringSOBQuicksort();
         }else if(sType == Schema.SoapType.Date || sType == Schema.SoapType.DateTime){
             quickSort = new DatetimeSOBQuicksort();
@@ -101,6 +103,17 @@ public class SortSobs{
         private override Integer compareToPivot(Object value, Object pivot){
             Decimal val = (Decimal) value;
             Decimal piv = (Decimal) pivot;
+            if(val == piv){ return 0; }
+            if(val > piv){ return 1; }
+            return -1;
+        }
+    }
+
+    private class TimeSOBQuicksort extends BaseSOBQuickSort{
+
+        private override Integer compareToPivot(Object value, Object pivot){
+            Time val = (Time)value;
+            Time piv = (Time)pivot;
             if(val == piv){ return 0; }
             if(val > piv){ return 1; }
             return -1;
