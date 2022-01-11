@@ -1,9 +1,11 @@
 /**
     Author: Charlie Jonas
         (github: @chuckjonas, charlie@callawaycloudconsulting.com)
+        
     Description:
         Allows for dynamic sorting of SObject Lists without the need to impement Comparables.
         - Uses quicksort
+        
     Documentation:  Please see https://github.com/ChuckJonas/apex-sort-sobs for useage information & updates
 */
 public class SortSobs{
