@@ -5,9 +5,8 @@
         Tests for SortSobs.cls
     Documentation:  Please see https://github.com/ChuckJonas/apex-sort-sobs for useage information & updates
 */
-@SuppressWarnings('PMD')
 @isTest
-private class TestSortSobs {
+private class SortSobsTest {
 
     @isTest static void test_string_field() {
         Account[] accs = new Account[]{};
