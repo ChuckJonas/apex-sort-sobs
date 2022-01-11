@@ -6,7 +6,6 @@
         - Uses quicksort
     Documentation:  Please see https://github.com/ChuckJonas/apex-sort-sobs for useage information & updates
 */
-@SuppressWarnings('PMD')
 public class SortSobs{
 
     /**
